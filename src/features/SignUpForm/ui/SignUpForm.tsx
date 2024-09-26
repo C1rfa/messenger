@@ -3,20 +3,23 @@
 import clsx from "clsx";
 import { useCallback, useState } from "react";
 import { FieldValues, useForm, SubmitHandler } from "react-hook-form";
+import PasswordStrengthBar from 'react-password-strength-bar';
 
 
-export const SignInForm = () => {
+export const SignUpForm = () => {
 
     const [isLoading, setLoading] = useState(false);
-    const { register, handleSubmit, formState } = useForm<FieldValues>(
+    const { register, handleSubmit, watch, formState } = useForm<FieldValues>(
         {
             defaultValues: {
+                name: "",
                 email: "",
                 password: ""
             }
         }
     );
     const { errors } = formState;
+    const password = watch("password", false);    
 
     const onSubmit: SubmitHandler<FieldValues> = useCallback((data) => {
         //TODO: AXIOS REQUEST WHEN BD IS READY
@@ -30,6 +33,36 @@ export const SignInForm = () => {
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
             <div className="relative">
+                <input
+                    type="text"
+                    className={clsx(
+                        "peer h-10 w-full border-b-2 border-gray-300 text-gray-900 placeholder-transparent focus:outline-none focus:border-indigo-600",
+                        isLoading && "opacity-50 cursor-default bg-transparent",
+                        errors.name?.message && "border-rose-700 text-rose-700 focus:border-rose-700"
+                    )}
+                    placeholder="Name"
+                    disabled={isLoading}
+                    {...register("name", {
+                        minLength: {
+                            value: 4,
+                            message: "Your name must have more than 3 letters"
+                        },
+                        required: {
+                            value: true,
+                            message: "Name is required"
+                        }
+                    })}
+                />
+                <label
+                    htmlFor="name"
+                    className="absolute left-0 -top-3.5 text-gray-600 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm"
+                >
+                    Name
+                </label>
+                <p className="text-rose-700 pt-2 text-sm">{ errors.name?.message as string || "​"}</p>
+            </div>
+        
+            <div className="mt-10 relative">
                 <input
                     type="text"
                     className={clsx(
@@ -58,6 +91,7 @@ export const SignInForm = () => {
                 </label>
                 <p className="text-rose-700 pt-2 text-sm">{ errors.email?.message as string || "​"}</p>
             </div>
+
             <div className="mt-10 relative">
                 <input
                     type="password"
@@ -82,17 +116,13 @@ export const SignInForm = () => {
                 >
                     Password
                 </label>
-                <p className="text-rose-700 pt-2 text-sm">{ errors.password?.message as string || "​"}</p>
+                {errors.password?.message ? <p className="text-rose-700 pt-2 text-sm">{ errors.password?.message as string}</p> : <PasswordStrengthBar className="mt-3.5" scoreWordClassName="hidden" password={password}/> }
             </div>
 
             <input
                 type="submit"
-                value="Sign in"
-                className={clsx(
-                    "mt-10 px-8 py-4 uppercase rounded-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-center block w-full focus:outline-none focus:ring focus:ring-offset-2 focus:ring-indigo-500 focus:ring-opacity-80 cursor-pointer",
-                    isLoading && "opacity-50 cursor-default bg-indigo-300 hover:bg-indigo-300"
-                )}
-                disabled={isLoading}
+                value="Sign up"
+                className="mt-20 px-8 py-4 uppercase rounded-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-center block w-full focus:outline-none focus:ring focus:ring-offset-2 focus:ring-indigo-500 focus:ring-opacity-80 cursor-pointer"
             />
         </form>
     );

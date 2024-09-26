@@ -3,9 +3,11 @@
 import { useCallback, useState } from "react";
 import { OverlayContent } from "./OverlayContent";
 import { SignInForm } from "@/features/SignInForm";
+import { SignUpForm } from "@/features/SignUpForm";
+import { SocailAuthVariations, SocialAuthButton } from "@/features/SocialAuthButton";
+import { MobileFormChanger } from "./MobileFormChanger";
 
 import clsx from "clsx";
-import { SocailAuthVariations, SocialAuthButton } from "@/features/SocialAuthButton";
 
 
 export const AuthenticationPage = () => {
@@ -32,48 +34,66 @@ export const AuthenticationPage = () => {
     );
 
     return (
-        <div className="flex flex-col items-center justify-center h-screen w-screen bg-gradient-to-r from-[#FECEE9] to-[#011C27]">
-            <div className="lg:h-4/5 lg:w-4/5 w-full h-full bg-black relative overflow-hidden rounded-lg">
+        <div className="flex flex-col items-center justify-center h-screen lg:w-screen bg-gradient-to-r from-[#FECEE9] to-[#011C27]">
+            <div className="lg:h-4/5 lg:w-4/5 h-full w-full bg-black relative lg:overflow-hidden rounded-lg">
                 <div 
                     id="signin"
                     className={clsx(
-                        "bg-white absolute top-0 left-0 h-full lg:w-1/2 w-full flex flex-col justify-center items-center transition-all duration-700 ease-in-out z-20",
-                        isAnimated && "translate-x-full opacity-0"
+                        "bg-white overflow-auto grid absolute top-0 left-0 py-8 w-full h-full lg:w-1/2 lg:transition-all lg:duration-700 lg:ease-in-out z-20",
+                        isAnimated && "lg:translate-x-full opacity-0"
                     )}
                 >
-                    <h1 className="text-5xl text-center mx-6 font-bold text-slate-950">
-                        Welcome back!
-                    </h1>
-                    <div className="w-72 mx-8">
-                        <SignInForm />
+                    <div/>
+                    <div className="gap-10 flex flex-col">
+                        <h1 className="text-5xl text-center m-auto font-bold text-slate-950">
+                            Welcome back!
+                        </h1>
+                        <div className="w-72 m-auto">
+                            <SignInForm />
+                        </div>
+                        <div className="relative flex items-center w-72 m-auto">
+                            <div className="flex-1 border-t-2 border-gray-300"></div>
+                            <span className="flex-shrink mx-4 text-slate-600">Or</span>
+                            <div className="flex-1 border-t-2 border-gray-300"></div>
+                        </div>
+                        <div className="flex justify-center items-center gap-4 w-72 m-auto">
+                            <SocialAuthButton authAction={SocailAuthVariations.AUTH_WITH_GITHUB} />
+                            <SocialAuthButton authAction={SocailAuthVariations.AUTH_WITH_GOOGLE} />
+                            <SocialAuthButton authAction={SocailAuthVariations.AUTH_WITH_SPOTIFY} />
+                        </div>
+                        <MobileFormChanger classNames="m-auto w-72" toggleForm={toggleOverlay}>
+                            Dont have an account? Sign Up
+                        </MobileFormChanger>
                     </div>
-                    <div className="relative flex mt-10 items-center w-72 mx-8">
-                        <div className="flex-1 border-t-2 border-gray-300"></div>
-                        <span className="flex-shrink mx-4 text-slate-600">Or</span>
-                        <div className="flex-1 border-t-2 border-gray-300"></div>
-                    </div>
-                    <div className="flex justify-center items-center mt-10 gap-4">
-                        <SocialAuthButton authAction={SocailAuthVariations.AUTH_WITH_GITHUB} />
-                        <SocialAuthButton authAction={SocailAuthVariations.AUTH_WITH_GOOGLE} />
-                        <SocialAuthButton authAction={SocailAuthVariations.AUTH_WITH_SPOTIFY} />
-                    </div>
+                    <div/>
                 </div>
+                
                 <div
                     id="signup"
                     className={clsx(
-                        "absolute top-0 left-0 h-full w-1/2 flex justify-center items-center transition-all duration-700 ease-in-out opacity-0 z-10",
-                        isAnimated && "translate-x-full opacity-100 z-50 animate-show"
+                        "bg-white grid absolute overflow-auto top-0 left-0 py-8 h-full w-full lg:w-1/2 lg:transition-all lg:duration-700 lg:ease-in-out opacity-0 z-10",
+                        isAnimated && "lg:translate-x-full opacity-100 z-50"
                     )}
                 >
-                    <div className="h-full w-full flex justify-center items-center">
-                    {/* <SignupForm /> */}
+                    <div />
+                    <div className="gap-10 flex flex-col">
+                        <h1 className="text-5xl text-center m-auto font-bold text-slate-950">
+                            Create account
+                        </h1>
+                        <div className="w-72 m-auto">
+                            <SignUpForm />
+                        </div>
+                        <MobileFormChanger classNames="m-auto w-72" toggleForm={toggleOverlay}>
+                            Have an account? Sign In
+                        </MobileFormChanger>
                     </div>
+                    <div />
                 </div>
 
                 <div
                     id="overlay-container"
                     className={clsx(
-                        "hidden lg:block lg:absolute top-0 left-1/2 w-1/2 h-full overflow-hidden transition duration-700 ease-in-out z-100",
+                        "hidden lg:block absolute top-0 left-1/2 w-1/2 h-full overflow-hidden transition duration-700 ease-in-out z-100",
                         isAnimated && "-translate-x-full"
                     )}
                 >
