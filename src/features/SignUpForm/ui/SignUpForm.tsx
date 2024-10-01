@@ -28,7 +28,7 @@ export const SignUpForm = () => {
         setLoading(true);
         toast.promise(
             axios.post("/api/register", data)
-                .then(() => { /* TODO: REDIRECT TO CONTACT PAGE */ })
+                .then(() => { /* TODO: REDIRECT TO CONTACTS PAGE */ })
                 .catch(() => setLoading(false)),
             {
                 pending: "In process, please wait",
