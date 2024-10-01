@@ -1,8 +1,11 @@
 "use client";
 
-import clsx from "clsx";
 import { useCallback, useState } from "react";
 import { FieldValues, useForm, SubmitHandler } from "react-hook-form";
+import { toast } from "react-toastify";
+
+import axios from "axios";
+import clsx from "clsx";
 import PasswordStrengthBar from 'react-password-strength-bar';
 
 
@@ -22,12 +25,25 @@ export const SignUpForm = () => {
     const password = watch("password", false);    
 
     const onSubmit: SubmitHandler<FieldValues> = useCallback((data) => {
-        //TODO: AXIOS REQUEST WHEN BD IS READY
-
-        //tmp
-        console.log(data);
         setLoading(true);
-        setTimeout(() => { setLoading(false) }, 1000);
+        toast.promise(
+            axios.post("/api/register", data)
+                .then(() => { /* TODO: REDIRECT TO CONTACT PAGE */ })
+                .catch(() => setLoading(false)),
+            {
+                pending: "In process, please wait",
+                success: "Complete. Redirecting",
+                error: {render({ data }) {
+                    if (data instanceof Error)
+                    {
+                        return data.message;   
+                    }
+
+                    return "Something went wrong";
+                }}
+            }
+        );
+
     }, []);
 
     return (
