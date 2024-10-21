@@ -43,7 +43,7 @@ export const AuthenticationPage = () => {
                         isAnimated && "lg:translate-x-full opacity-0"
                     )}
                 >
-                    <div/>
+                    <div />
                     <div className="gap-10 flex flex-col">
                         <h1 className="text-5xl text-center m-auto font-bold text-slate-950">
                             Welcome back!
@@ -65,7 +65,7 @@ export const AuthenticationPage = () => {
                             Dont have an account? Sign Up
                         </MobileFormChanger>
                     </div>
-                    <div/>
+                    <div />
                 </div>
                 
                 <div

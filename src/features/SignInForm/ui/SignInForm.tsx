@@ -1,8 +1,10 @@
 "use client";
 
-import clsx from "clsx";
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { FieldValues, useForm, SubmitHandler } from "react-hook-form";
+import { signIn } from "next-auth/react";
+import { Id, toast, TypeOptions, Zoom } from "react-toastify";
+import clsx from "clsx";
 
 
 export const SignInForm = () => {
@@ -17,14 +19,43 @@ export const SignInForm = () => {
         }
     );
     const { errors } = formState;
+    const toastMessageId = useRef<Id>();
+
+    toast.onChange(payload => {
+        if (payload.status === "removed") {
+            toastMessageId.current = "";
+        }
+    });
+
+    const displayToastMessage = (message: string, messageType: TypeOptions) => {
+        if (toastMessageId.current) {
+            toast.update(toastMessageId.current, {
+                render: message,
+                type: messageType,
+                transition: (messageType === "success" ) ? Zoom : null,
+            });
+        }
+        else {
+            toastMessageId.current = toast(message, {
+                type: messageType,
+            });
+        }
+    };
 
     const onSubmit: SubmitHandler<FieldValues> = useCallback((data) => {
-        //TODO: AXIOS REQUEST WHEN BD IS READY
-
-        //tmp
-        console.log(data);
         setLoading(true);
-        setTimeout(() => { setLoading(false) }, 1000);
+        signIn("credentials", { ...data, redirect: false })
+            .then((response) => {
+                if (response?.error)
+                {
+                    displayToastMessage("Invalid Email or Password", "error");
+                    setLoading(false);
+                }
+                else if (response?.ok && response.status === 200)
+                {
+                    displayToastMessage("Successfully logged in. Redirecting.", "success");
+                } 
+            });
     }, []);
 
     return (

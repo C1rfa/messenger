@@ -1,9 +1,21 @@
 model Account {
-    id String @id @default(auto()) @map("_id") @db.ObjectId
-    name String @unique
-    email String @unique
-    passwordHash String 
+  id                 String @id @default(auto()) @map("_id") @db.ObjectId
+  userId             String @db.ObjectId
+  type               String
+  provider           String
+  providerAccountId  String
+  refresh_token      String? @db.String @map("refreshToken")
+  access_token       String? @db.String @map("accessToken")
+  expires_at         Int? @map("expiresAt")
+  token_type         String? @map("tokenType")
+  scope              String?
+  id_token           String? @db.String @map("idToken")
+  sessionState       String? @map("session_state")
+ 
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+ 
+  user               User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+  @@unique([provider, providerAccountId])
 }

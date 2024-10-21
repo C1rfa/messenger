@@ -1,9 +1,11 @@
 "use client";
 
-import clsx from "clsx";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { IconType } from "react-icons";
 import { BsGithub, BsGoogle, BsSpotify } from "react-icons/bs";
+import { signIn } from "next-auth/react";
+import { Id, toast, TypeOptions, Zoom } from "react-toastify";
+import clsx from "clsx";
 
 
 export enum SocailAuthVariations {
@@ -38,18 +40,48 @@ export const SocialAuthButton = (props: SocialAuthButtonProps) => {
             break;
     };
 
+    const toastMessageId = useRef<Id>();
+
+    toast.onChange(payload => {
+        if (payload.status === "removed") {
+            toastMessageId.current = "";
+        }
+    });
+
+    const displayToastMessage = (message: string, messageType: TypeOptions) => {
+        if (toastMessageId.current) {
+            toast.update(toastMessageId.current, {
+                render: message,
+                type: messageType,
+                transition: (messageType === "success" ) ? Zoom : null,
+            });
+        }
+        else {
+            toastMessageId.current = toast(message, {
+                type: messageType,
+            });
+        }
+    };
+
     const onButtonClickHandler = () => {
         if (onAuthButtonClick)
         {
             onAuthButtonClick();
         }
-
-        //TODO:AXIOS REQUEST
-
-        //tmp
-        console.log(authAction);
         setLoading(true);
-        setTimeout(() => { setLoading(false) }, 1000);
+
+        signIn(authAction)
+            .then((response) => {
+                if (response?.error)
+                {
+                    displayToastMessage("Invalid Email or Password", "error");
+                    setLoading(false);
+                }
+                else if (response?.ok && response.status === 200)
+                {
+                    displayToastMessage("Successfully logged in. Redirecting.", "success");
+                } 
+            });
     };
 
     return (
