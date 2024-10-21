@@ -70,7 +70,7 @@ export const SocialAuthButton = (props: SocialAuthButtonProps) => {
         }
         setLoading(true);
 
-        signIn(authAction)
+        signIn(authAction, )
             .then((response) => {
                 if (response?.error)
                 {

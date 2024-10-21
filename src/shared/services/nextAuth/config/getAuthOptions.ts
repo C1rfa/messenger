@@ -16,6 +16,9 @@ export const getAuthOptions = (): NextAuthOptions => {
         session: {
             strategy: "jwt"
         },
+        pages: {
+            signIn: "/",
+        },
         providers: [
             SpotifyProvider({
                 clientId: process.env.SPOTIFY_CLIENT_ID!,

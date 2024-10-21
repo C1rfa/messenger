@@ -1,11 +1,13 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { OverlayContent } from "./OverlayContent";
 import { SignInForm } from "@/features/SignInForm";
 import { SignUpForm } from "@/features/SignUpForm";
 import { SocailAuthVariations, SocialAuthButton } from "@/features/SocialAuthButton";
 import { MobileFormChanger } from "./MobileFormChanger";
+import { useSearchParams } from "next/navigation";
+import { toast } from "react-toastify";
 
 import clsx from "clsx";
 
@@ -15,7 +17,7 @@ export const AuthenticationPage = () => {
     const toggleOverlay = useCallback(() => {
         setAnimated((isAnimated) => !isAnimated);
     }, []);
-
+    
     const leftOverlay: React.ReactNode = (
         <OverlayContent 
             title={"Already have an account?"}
@@ -31,6 +33,15 @@ export const AuthenticationPage = () => {
             overlayButtonText={"Sign Up"}
             onOverlayButtonClick={toggleOverlay}
         />
+    );
+
+    const urlParams = useSearchParams();
+    useEffect(() => {   
+            if (urlParams && urlParams.get("error")) {                
+                toast.error("Try signing in with a different account.");
+            }
+        },
+        [urlParams]
     );
 
     return (
